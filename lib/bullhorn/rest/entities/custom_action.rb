@@ -1,13 +1,11 @@
 module Bullhorn
-module Rest
-module Entities
+  module Rest
+    module Entities
+      module CustomAction
+        extend Base
 
-module CustomAction
-  extend Base
-
-  define_methods(:immutable => true)
-end
-
-end
-end
+        define_methods(:immutable => true)
+      end
+    end
+  end
 end

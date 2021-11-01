@@ -1,13 +1,11 @@
 module Bullhorn
-module Rest
-module Entities
+  module Rest
+    module Entities
+      module JobSubmission
+        extend Base
 
-module JobSubmission
-  extend Base
-
-  define_methods
-end
-
-end
-end
+        define_methods
+      end
+    end
+  end
 end

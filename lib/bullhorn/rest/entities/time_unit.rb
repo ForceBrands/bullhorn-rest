@@ -1,13 +1,11 @@
 module Bullhorn
-module Rest
-module Entities
+  module Rest
+    module Entities
+      module TimeUnit
+        extend Base
 
-module TimeUnit
-  extend Base
-
-  define_methods(:immutable => true)
-end
-
-end
-end
+        define_methods(:immutable => true)
+      end
+    end
+  end
 end

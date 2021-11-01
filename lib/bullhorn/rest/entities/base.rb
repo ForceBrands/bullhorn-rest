@@ -16,7 +16,7 @@ module Bullhorn
           def next_page
             start_param = @current_record + record_count + 1
 
-            params = { :fields => '*', :count => record_count, :start => start_param }.merge(@options)
+            params = { :fields => @fields, :count => record_count, :start => start_param }.merge(@options)
             res = @conn.get @path, params
             json = JSON.parse(res.body)
 
@@ -33,6 +33,7 @@ module Bullhorn
           name = entity.to_s.classify
           plural = entity.to_s.pluralize
           name_plural = name.pluralize
+          fields = options[:fields] ? options[:fields].join(',') : '*'
 
           if options[:owner_methods]
 
@@ -43,31 +44,32 @@ module Bullhorn
               obj  
             end      
 
-            define_method("attach_next_page") do |obj, options, path, conn|
+            define_method("attach_next_page") do |obj, options, path, conn, fields|
               obj.instance_variable_set :@options, options
               obj.instance_variable_set :@path, path
               obj.instance_variable_set :@current_record, 0
               obj.instance_variable_set :@conn, conn
+              obj.instance_variable_set :@fields, fields
               obj.instance_eval do class << self; include Decorated_Entity; end; end       
               obj
             end   
 
             define_method("department_#{plural}") do |options={}|
-              params = {:fields => '*', :count => '100'}.merge(options)
+              params = {:fields => fields, :count => '100'}.merge(options)
               path = "department#{name_plural}"
 
               res = @conn.get path, params
               obj = decorate_response JSON.parse(res.body)
 
-              attach_next_page obj, options, path, conn
+              attach_next_page obj, options, path, conn, fields
             end                         
 
             define_method("user_#{plural}") do |options={}|
-              params = {:fields => '*', :count => '100'}.merge(options)
+              params = {:fields => fields, :count => '100'}.merge(options)
               path = "my#{name_plural}"
               res = @conn.get path, params
               obj = decorate_response JSON.parse(res.body)
-              attach_next_page obj, options, path, conn
+              attach_next_page obj, options, path, conn, fields
             end
 
             alias_method plural, "department_#{plural}"
@@ -80,24 +82,24 @@ module Bullhorn
           end
 
           define_method("search_#{plural}") do |options={}|
-            params = {:fields => '*', :count => '500'}.merge(options)
+            params = {:fields => fields, :count => '500'}.merge(options)
             path = "search/#{name}"
             res = @conn.get path, params
             obj = decorate_response JSON.parse(res.body)
-            attach_next_page obj, options, path, conn    
+            attach_next_page obj, options, path, conn, fields
           end
 
           define_method("query_#{plural}") do |options={}|
             # params = {:fields => '*', :count => '500', :orderBy => 'name'}.merge(options)
-            params = {:fields => '*', :count => '500'}.merge(options)
+            params = {:fields => fields, :count => '500'}.merge(options)
             path = "query/#{name}"
             res = @conn.get path, params
             obj = decorate_response JSON.parse(res.body)
-            attach_next_page obj, options, path, conn     
+            attach_next_page obj, options, path, conn, fields  
           end
 
           define_method(entity) do |id, options={}|
-            params = {fields: '*'}.merge(options)
+            params = {fields: fields}.merge(options)
             path = "entity/#{name}/#{Array.wrap(id).join(',')}"
             if assoc = options.delete(:association)
               path += "/#{assoc}"

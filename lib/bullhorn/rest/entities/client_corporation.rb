@@ -1,13 +1,11 @@
 module Bullhorn
-module Rest
-module Entities
+  module Rest
+    module Entities
+      module ClientCorporation
+        extend Base
 
-module ClientCorporation
-  extend Base
-
-  define_methods(:owner_methods => true)
-end
-
-end
-end
+        define_methods(:owner_methods => true)
+      end
+    end
+  end
 end
