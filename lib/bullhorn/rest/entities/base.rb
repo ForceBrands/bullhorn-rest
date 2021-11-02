@@ -82,7 +82,7 @@ module Bullhorn
           end
 
           define_method("search_#{plural}") do |options={}|
-            params = {:fields => fields, :count => '500'}.merge(options)
+            params = {:fields => fields, :count => '200'}.merge(options)
             path = "search/#{name}"
             res = @conn.get path, params
             obj = decorate_response JSON.parse(res.body)
@@ -91,7 +91,7 @@ module Bullhorn
 
           define_method("query_#{plural}") do |options={}|
             # params = {:fields => '*', :count => '500', :orderBy => 'name'}.merge(options)
-            params = {:fields => fields, :count => '500'}.merge(options)
+            params = {:fields => fields, :count => '200'}.merge(options)
             path = "query/#{name}"
             res = @conn.get path, params
             obj = decorate_response JSON.parse(res.body)

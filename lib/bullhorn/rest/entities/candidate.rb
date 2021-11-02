@@ -9,7 +9,7 @@ module Bullhorn
           'firstName', 
           'lastName',
           'email',
-          # 'categories',
+          'categories',
           'companyName',
           'dateAdded',
           'externalID'
