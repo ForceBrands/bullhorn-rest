@@ -77,6 +77,8 @@ module Bullhorn
 
       def refresh_tokens
         url = "https://#{self.auth_host}/oauth/token"
+        puts url
+
         params = {
           grant_type: 'refresh_token',
           refresh_token: refresh_token,
@@ -85,6 +87,8 @@ module Bullhorn
         }
 
         res = auth_conn.post url, params
+        puts res
+
         hash = JSON.parse(res.body)
 
         if hash.keys.include?('errorCode')
@@ -99,6 +103,7 @@ module Bullhorn
 
       def login
         url = "https://#{self.rest_host}/rest-services/login"
+
         params = {
           version: '*',
           access_token: access_token
@@ -106,8 +111,12 @@ module Bullhorn
         params[:ttl] = ttl if ttl
         response = auth_conn.get url, params
         hash = JSON.parse(response.body)
+        puts hash
+        puts response.status
 
-        if hash.keys.include?('errorCode')
+        if hash.keys.include?('errorCode')          
+          puts hash
+          
           self.errors = hash
           raise Bullhorn::Rest::AuthenticationError
         end
@@ -149,6 +158,7 @@ module Bullhorn
       end
 
       def expired?
+        return true if access_token_expires_at.nil?
         access_token_expires_at && access_token_expires_at < Time.now
       end
 

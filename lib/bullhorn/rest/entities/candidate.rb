@@ -11,8 +11,9 @@ module Bullhorn
           'email',
           'categories',
           'companyName',
+          'isDeleted',
           'dateAdded',
-          'externalID'
+          'dateLastModified'
         ])
       end
     end

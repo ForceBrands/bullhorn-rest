@@ -82,7 +82,7 @@ module Bullhorn
       end 
 
       # Get the events for a subscription
-      # conn.get_event_subscription('candidates')
+      # conn.get_event_subscription('resources')
       def get_event_subscription(subscription_name, max_events = 100)
         path = "event/subscription/#{subscription_name}?maxEvents=#{max_events}" 
         res = conn.get path
