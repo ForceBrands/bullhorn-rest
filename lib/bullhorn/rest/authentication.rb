@@ -49,6 +49,10 @@ module Bullhorn
           response_type: 'code'
         }
 
+        puts "====================================="
+        puts url, params    
+        puts "====================================="
+
         res = auth_conn.get url, params    
         location = res.headers['location']
         self.auth_code = CGI::parse(URI(location).query)["code"].first
@@ -64,6 +68,11 @@ module Bullhorn
         }
         res = auth_conn.post url, params
         hash = JSON.parse(res.body)
+
+        puts "+++++++++++++++++++++++++++++++++++++"
+        puts url, params    
+        puts hash
+        puts "+++++++++++++++++++++++++++++++++++++"
 
         if hash.keys.include?('errorCode')
           self.errors = hash
@@ -87,9 +96,9 @@ module Bullhorn
         }
 
         res = auth_conn.post url, params
-        puts res
-
         hash = JSON.parse(res.body)
+
+        puts hash
 
         if hash.keys.include?('errorCode')
           self.errors = hash
@@ -108,9 +117,16 @@ module Bullhorn
           version: '*',
           access_token: access_token
         }
+
         params[:ttl] = ttl if ttl
+
+        puts "-------------------------------------"
+        puts url, params    
+        puts "-------------------------------------"
+
         response = auth_conn.get url, params
         hash = JSON.parse(response.body)
+        
         puts hash
         puts response.status
 
@@ -128,20 +144,12 @@ module Bullhorn
       def authenticate
         expire if expired?
 
-        unless rest_token
-          unless access_token
-            if refresh_token
-              refresh_tokens
-            else
-              unless auth_code
-                authorize
-              end
-              retrieve_tokens
-            end
-          end
-
+        if rest_token.nil? && access_token.nil?
+          authorize
+          retrieve_tokens
           login
         end
+
         did_authenticate
       end
 
@@ -158,7 +166,12 @@ module Bullhorn
       end
 
       def expired?
-        return true if access_token_expires_at.nil?
+        # return true if access_token_expires_at.nil?
+
+        puts 'access_token_expires_at ====================='
+        puts access_token_expires_at
+        puts '============================================='
+
         access_token_expires_at && access_token_expires_at < Time.now
       end
 
