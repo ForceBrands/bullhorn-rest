@@ -20,7 +20,7 @@ module Bullhorn
             res = @conn.get @path, params
             json = JSON.parse(res.body)
 
-            obj = Hashie::Mash.new json
+            obj = Hash.new json
             obj.record_count = json['count']
             obj.has_next_page = obj.total? ? ((obj.start + obj.record_count) <= obj.total) : false
 
@@ -38,7 +38,7 @@ module Bullhorn
           if options[:owner_methods]
 
             define_method("decorate_response") do |res|
-              obj = Hashie::Mash.new res
+              obj = Hash.new res
               obj.record_count = res["count"]
               obj.has_next_page = obj.total? ? ((obj.start + obj.record_count) <= obj.total) : false       
               obj  
@@ -105,7 +105,7 @@ module Bullhorn
               path += "/#{assoc}"
             end
             res = conn.get path, params
-            Hashie::Mash.new JSON.parse(res.body)
+            JSON.parse(res.body)
           end
 
           unless options[:immutable]
@@ -121,20 +121,24 @@ module Bullhorn
               if ids = options.delete(:association_ids)
                 path += "/#{ids.to_s}"
               end
-              res = conn.put path, attributes
-              Hashie::Mash.new JSON.parse(res.body)
+              
+              res = conn.put path, attributes.to_json
+              
+              puts attributes.to_json
+
+              JSON.parse(res.body)
             end
 
             define_method("update_#{entity}") do |id, attributes={}|
               path = "entity/#{name}/#{id}"
               res = conn.post path, attributes
-              Hashie::Mash.new JSON.parse(res.body)
+              JSON.parse(res.body)
             end
 
             define_method("delete_#{entity}") do |id|
               path = "entity/#{name}/#{id}"
               res = conn.delete path
-              Hashie::Mash.new JSON.parse(res.body)
+              JSON.parse(res.body)
             end
           end
 
@@ -142,7 +146,7 @@ module Bullhorn
             define_method("put_#{entity}_file") do |id, attributes = {}|
               path = "file/#{name}/#{id}"
               res = conn.put path, attributes
-              Hashie::Mash.new JSON.parse(res.body)
+              JSON.parse(res.body)
             end
           end
         end

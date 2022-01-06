@@ -26,6 +26,7 @@ module Bullhorn
       include Bullhorn::Rest::Entities::CustomAction
       include Bullhorn::Rest::Entities::JobOrder
       include Bullhorn::Rest::Entities::JobSubmission
+      include Bullhorn::Rest::Entities::Lead
       include Bullhorn::Rest::Entities::Note
       include Bullhorn::Rest::Entities::NoteEntity
       include Bullhorn::Rest::Entities::Placement
