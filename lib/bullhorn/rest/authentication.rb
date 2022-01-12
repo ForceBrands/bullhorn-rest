@@ -49,11 +49,16 @@ module Bullhorn
           response_type: 'code'
         }
 
-        puts "====================================="
+        puts "authorize ==========================="
         puts url, params    
         puts "====================================="
 
         res = auth_conn.get url, params    
+        
+        puts "location ============================"
+        puts res.headers['location']   
+        puts "====================================="
+
         location = res.headers['location']
         self.auth_code = CGI::parse(URI(location).query)["code"].first
       end
@@ -69,7 +74,7 @@ module Bullhorn
         res = auth_conn.post url, params
         hash = JSON.parse(res.body)
 
-        puts "+++++++++++++++++++++++++++++++++++++"
+        puts "retrieve_tokens +++++++++++++++++++++"
         puts url, params    
         puts hash
         puts "+++++++++++++++++++++++++++++++++++++"
@@ -87,6 +92,10 @@ module Bullhorn
       def refresh_tokens
         url = "https://#{self.auth_host}/oauth/token"
         puts url
+
+        puts "refresh_tokens ++++++++++++++++++++++"
+        puts url
+        puts "+++++++++++++++++++++++++++++++++++++"
 
         params = {
           grant_type: 'refresh_token',
@@ -129,6 +138,11 @@ module Bullhorn
         
         puts hash
         puts response.status
+        
+        puts "response.status +++++++++++++++++++++"
+        puts hash
+        puts response.status
+        puts "+++++++++++++++++++++++++++++++++++++"
 
         if hash.keys.include?('errorCode')          
           puts hash
@@ -144,9 +158,24 @@ module Bullhorn
       def authenticate
         expire if expired?
 
-        if rest_token.nil? && access_token.nil?
-          authorize
-          retrieve_tokens
+        # if rest_token.nil? && access_token.nil?
+        #   retrieve_tokens
+        #   authorize
+        #   login
+        # end
+
+        if rest_token.nil?
+          if access_token.nil?
+            if refresh_token
+              refresh_tokens
+            else
+              unless auth_code
+                authorize
+              end
+              retrieve_tokens
+            end
+          end
+
           login
         end
 
@@ -168,9 +197,9 @@ module Bullhorn
       def expired?
         # return true if access_token_expires_at.nil?
 
-        puts 'access_token_expires_at ====================='
+        puts 'access_token_expires_at ============='
         puts access_token_expires_at
-        puts '============================================='
+        puts '====================================='
 
         access_token_expires_at && access_token_expires_at < Time.now
       end
