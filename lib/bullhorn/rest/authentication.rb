@@ -158,26 +158,26 @@ module Bullhorn
       def authenticate
         expire if expired?
 
-        if rest_token.nil? && access_token.nil?
-          retrieve_tokens
-          authorize
-          login
-        end
-
-        # if rest_token.nil?
-        #   if access_token.nil?
-        #     if refresh_token
-        #       refresh_tokens
-        #     else
-        #       unless auth_code
-        #         authorize
-        #       end
-        #       retrieve_tokens
-        #     end
-        #   end
-
+        # if rest_token.nil? && access_token.nil?
+        #   # retrieve_tokens
+        #   authorize
         #   login
         # end
+
+        if rest_token.nil?
+          if access_token.nil?
+            if refresh_token
+              refresh_tokens
+            else
+              unless auth_code
+                authorize
+              end
+              retrieve_tokens
+            end
+          end
+
+          login
+        end
 
         did_authenticate
       end
