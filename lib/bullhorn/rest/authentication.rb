@@ -1,3 +1,5 @@
+require 'tempfile'
+
 module Bullhorn
   module Rest
     class AuthenticationError < StandardError; end
@@ -40,7 +42,6 @@ module Bullhorn
       end
 
       def authorize
-        url = "https://#{self.auth_host}/oauth/authorize"
         params = {
           client_id: client_id,
           username: username,
@@ -49,18 +50,18 @@ module Bullhorn
           response_type: 'code'
         }
 
-        puts "authorize ==========================="
-        puts url, params    
-        puts "====================================="
+        connection = Faraday.new self.auth_host
+        response = connection.get('/oauth/authorize') do |req|
+          req.params = params
+          req.headers['Content-Type'] = 'text/html'
+        end
 
-        res = auth_conn.get url, params    
-        
-        puts "location ============================"
-        puts res.headers['location']   
-        puts "====================================="
+        auth_code = CGI::parse(URI(response.headers['location']).query)["code"].first
 
-        location = res.headers['location']
-        self.auth_code = CGI::parse(URI(location).query)["code"].first
+        authfile = Tempfile.new('bullhorn-auth-code')
+        authfile.write(auth_code)
+
+        self.auth_code = auth_code
       end
 
       def retrieve_tokens
@@ -74,11 +75,6 @@ module Bullhorn
         res = auth_conn.post url, params
         hash = JSON.parse(res.body)
 
-        puts "retrieve_tokens +++++++++++++++++++++"
-        puts url, params    
-        puts hash
-        puts "+++++++++++++++++++++++++++++++++++++"
-
         if hash.keys.include?('errorCode')
           self.errors = hash
           raise Bullhorn::Rest::AuthenticationError
@@ -91,11 +87,6 @@ module Bullhorn
 
       def refresh_tokens
         url = "https://#{self.auth_host}/oauth/token"
-        puts url
-
-        puts "refresh_tokens ++++++++++++++++++++++"
-        puts url
-        puts "+++++++++++++++++++++++++++++++++++++"
 
         params = {
           grant_type: 'refresh_token',
@@ -106,8 +97,6 @@ module Bullhorn
 
         res = auth_conn.post url, params
         hash = JSON.parse(res.body)
-
-        puts hash
 
         if hash.keys.include?('errorCode')
           self.errors = hash
@@ -129,21 +118,9 @@ module Bullhorn
 
         params[:ttl] = ttl if ttl
 
-        puts "-------------------------------------"
-        puts url, params    
-        puts "-------------------------------------"
-
         response = auth_conn.get url, params
         hash = JSON.parse(response.body)
         
-        puts hash
-        puts response.status
-        
-        puts "response.status +++++++++++++++++++++"
-        puts hash
-        puts response.status
-        puts "+++++++++++++++++++++++++++++++++++++"
-
         if hash.keys.include?('errorCode')          
           puts hash
           
@@ -157,12 +134,6 @@ module Bullhorn
 
       def authenticate
         expire if expired?
-
-        # if rest_token.nil? && access_token.nil?
-        #   # retrieve_tokens
-        #   authorize
-        #   login
-        # end
 
         if rest_token.nil?
           if access_token.nil?
@@ -195,12 +166,6 @@ module Bullhorn
       end
 
       def expired?
-        # return true if access_token_expires_at.nil?
-
-        puts 'access_token_expires_at ============='
-        puts access_token_expires_at
-        puts '====================================='
-
         access_token_expires_at && access_token_expires_at < Time.now
       end
 
