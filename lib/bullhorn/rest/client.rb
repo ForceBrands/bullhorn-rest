@@ -87,7 +87,7 @@ module Bullhorn
       end 
 
       # Create an event subscription (there is no way to query all of them, so remember the subscriptions you've created)
-      # conn.create_event_subscription('resources', 'entity', ['INSERTED','UPDATED','DELETED'], ['Candidate', 'JobOrder', 'ClientCorporation', 'ClientContact', 'CorporateUser'])
+      # conn.create_event_subscription('resources_production', 'entity', ['INSERTED','UPDATED','DELETED'], ['Candidate', 'JobOrder', 'ClientCorporation', 'ClientContact', 'CorporateUser', 'Placement'])
       def create_event_subscription(subscription_name, subscription_type = 'entity', event_types=['INSERTED','UPDATED','DELETED'], names = [])
         path = "event/subscription/#{subscription_name}?type=#{subscription_type}&names=#{names.join(',')}&eventTypes=#{event_types.join(',')}" 
         res = conn.put path
@@ -95,7 +95,7 @@ module Bullhorn
       end 
 
       # Get the events for a subscription
-      # conn.get_event_subscription('resources')
+      # conn.get_event_subscription('resources_production')
       def get_event_subscription(subscription_name, max_events = 100)
         path = "event/subscription/#{subscription_name}?maxEvents=#{max_events}" 
         res = conn.get path
@@ -108,7 +108,7 @@ module Bullhorn
       end 
 
       # Remove a subscription
-      # conn.destroy_event_subscription('candidates')
+      # conn.destroy_event_subscription('resources_production')
       def destroy_event_subscription(subscription_name)
         path = "event/subscription/#{subscription_name}" 
         res = conn.delete path

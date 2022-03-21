@@ -4,7 +4,22 @@ module Bullhorn
       module Placement
         extend Base
 
-        define_methods(:owner_methods => true)
+        define_methods(owner_methods: true, file_methods: true, fields: [
+          'id',
+          'candidate', 
+          'fee',
+          'jobOrder',
+          'jobSubmission',
+          'customBillRate10',
+          'customDate10',
+          'correlatedCustomText2',
+          'correlatedCustomText4',
+          'customText8',
+          'ustomBillRate1',
+          'isDeleted',
+          'dateAdded',
+          'dateLastModified'
+        ])
       end
     end
   end
