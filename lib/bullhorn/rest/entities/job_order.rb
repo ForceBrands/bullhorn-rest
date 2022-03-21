@@ -10,7 +10,6 @@ module Bullhorn
           'title',
           'clientCorporation',
           'clientContact',
-          'employeeType',
           'dateAdded',
           'dateLastModified'
         ])

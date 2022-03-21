@@ -11,6 +11,7 @@ module Bullhorn
           'jobOrder',
           'jobSubmission',
           'customBillRate10',
+          'employeeType',
           'customDate2',
           'customDate10',
           'correlatedCustomText2',
