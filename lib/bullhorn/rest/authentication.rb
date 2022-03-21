@@ -1,5 +1,3 @@
-require 'tempfile'
-
 module Bullhorn
   module Rest
     class AuthenticationError < StandardError; end
@@ -42,6 +40,7 @@ module Bullhorn
       end
 
       def authorize
+        url = "https://#{self.auth_host}/oauth/authorize"
         params = {
           client_id: client_id,
           username: username,
@@ -50,18 +49,10 @@ module Bullhorn
           response_type: 'code'
         }
 
-        connection = Faraday.new self.auth_host
-        response = connection.get('/oauth/authorize') do |req|
-          req.params = params
-          req.headers['Content-Type'] = 'text/html'
-        end
-
-        auth_code = CGI::parse(URI(response.headers['location']).query)["code"].first
-
-        authfile = Tempfile.new('bullhorn-auth-code')
-        authfile.write(auth_code)
-
-        self.auth_code = auth_code
+        res = auth_conn.get url, params    
+        
+        location = res.headers['location']
+        self.auth_code = CGI::parse(URI(location).query)["code"].first
       end
 
       def retrieve_tokens
@@ -87,7 +78,6 @@ module Bullhorn
 
       def refresh_tokens
         url = "https://#{self.auth_host}/oauth/token"
-
         params = {
           grant_type: 'refresh_token',
           refresh_token: refresh_token,
@@ -122,8 +112,6 @@ module Bullhorn
         hash = JSON.parse(response.body)
         
         if hash.keys.include?('errorCode')          
-          puts hash
-          
           self.errors = hash
           raise Bullhorn::Rest::AuthenticationError
         end
@@ -140,9 +128,10 @@ module Bullhorn
             if refresh_token
               refresh_tokens
             else
-              unless auth_code
+              if auth_code.nil?
                 authorize
               end
+
               retrieve_tokens
             end
           end
