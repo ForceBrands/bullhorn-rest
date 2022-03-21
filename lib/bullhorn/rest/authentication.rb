@@ -126,11 +126,8 @@ module Bullhorn
         if rest_token.nil?
           if access_token.nil?
             if refresh_token
-              binding.pry
               refresh_tokens
             else
-              binding.pry
-
               if auth_code.nil?
                 authorize
               end
