@@ -6,10 +6,10 @@ module Bullhorn
 
         define_methods(owner_methods: true, file_methods: true, fields: [
           'id',
-          'userID',
+          'owner',
           'title',
-          'clientCorporationID',
-          'clientUserID',
+          'clientCorporation',
+          'clientContact',
           'dateAdded',
           'dateLastModified'
         ])
