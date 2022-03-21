@@ -16,7 +16,6 @@ module Bullhorn
           'correlatedCustomText4',
           'customText8',
           'customBillRate1',
-          'isDeleted',
           'dateAdded',
           'dateLastModified'
         ])
