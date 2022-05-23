@@ -10,6 +10,8 @@ module Bullhorn
           'title',
           'clientCorporation',
           'clientContact',
+          'payRate',
+          'correlatedCustomFloat3',
           'dateAdded',
           'dateLastModified'
         ])
