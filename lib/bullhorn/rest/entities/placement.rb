@@ -17,6 +17,7 @@ module Bullhorn
           'correlatedCustomText2',
           'correlatedCustomText4',
           'customText8',
+          'customDate13',
           'customBillRate1',
           'dateAdded',
           'dateLastModified'
@@ -25,3 +26,5 @@ module Bullhorn
     end
   end
 end
+
+

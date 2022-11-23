@@ -28,6 +28,7 @@ module Bullhorn
           'leads',
           'externalID',
           # 'isDeleted',
+          'linkedinProfileName',
           'dateAdded',
           'dateLastModified'
         ])      
