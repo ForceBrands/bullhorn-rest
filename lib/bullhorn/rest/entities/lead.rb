@@ -23,6 +23,8 @@ module Bullhorn
           'customFloat1',
           'customInt1',
           'customText1',
+          'customText6',
+          'customText7',
           'customTextBlock1',
           'dateAdded',
           # 'dateLastComment',
