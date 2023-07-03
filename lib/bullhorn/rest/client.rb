@@ -62,7 +62,7 @@ module Bullhorn
       def find_resume(entity = 'Candidate', entity_id)
         res = conn.get ['entityFiles', entity, entity_id].join('/')
         files = JSON.parse(res.body)["EntityFiles"]
-        resume = files.select {|f| f["type"] == "Resume" }
+        resume = files.select {|f| f["type"].include?("Resume") }
         resume[0]
       end 
 
