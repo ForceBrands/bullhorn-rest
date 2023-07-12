@@ -73,7 +73,7 @@ module Bullhorn
         conn.get file_path
       end
 
-      def get_job_order_resumes(entity = 'JobOrder', entity_id)
+      def find_job_order_resumes(entity = 'JobOrder', entity_id)
         res = conn.get ['entityFiles', entity, entity_id].join('/')
         files = JSON.parse(res.body)["EntityFiles"]
         files.select {|f| RESUME_TYPES.include?(f["type"])}
