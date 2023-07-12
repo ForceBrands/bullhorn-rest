@@ -44,6 +44,8 @@ module Bullhorn
 
       attr_reader :conn
 
+      RESUME_TYPES = ["Resume", "FB Stamped Resume"]
+
       # Initializes a new Bullhorn REST Client
       def initialize(options = {})
         @conn = Faraday.new do |f|
@@ -62,14 +64,20 @@ module Bullhorn
       def find_resume(entity = 'Candidate', entity_id)
         res = conn.get ['entityFiles', entity, entity_id].join('/')
         files = JSON.parse(res.body)["EntityFiles"]
-        resume = files.select {|f| f["type"].include?("Resume") }
-        resume[0]
+        resume = files.select {|f| RESUME_TYPES.include?(f["type"]) }
+        resume[-1]
       end 
 
       def get_resume(resume)
         file_path = '/file' + resume['fileUrl'].split('/file')[-1] + '/raw'
         conn.get file_path
-      end 
+      end
+
+      def get_job_order_resumes(entity = 'JobOrder', entity_id)
+        res = conn.get ['entityFiles', entity, entity_id].join('/')
+        files = JSON.parse(res.body)["EntityFiles"]
+        files.select {|f| RESUME_TYPES.include?(f["type"])}
+      end
 
       def parse_to_candidate(resume_text)
         path = "resume/parseToCandidateViaJson?format=text"
