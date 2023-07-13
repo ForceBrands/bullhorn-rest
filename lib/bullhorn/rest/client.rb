@@ -44,7 +44,7 @@ module Bullhorn
 
       attr_reader :conn
 
-      RESUME_TYPES = ["Resume", "FB Stamped Resume"]
+      RESUME_TYPES = ["Resume", "FB Stamped Resume", "Impactful Stamped Resume"]
 
       # Initializes a new Bullhorn REST Client
       def initialize(options = {})
@@ -77,6 +77,34 @@ module Bullhorn
         res = conn.get ['entityFiles', entity, entity_id].join('/')
         files = JSON.parse(res.body)["EntityFiles"]
         files.select {|f| RESUME_TYPES.include?(f["type"])}
+      end
+
+      def find_all_candidate_resumes(entity='Candidate', candidate_id)
+        res = conn.get ['entityFiles', entity, candidate_id].join('/')
+        files = JSON.parse(res.body)["EntityFiles"]
+        files.select {|f| RESUME_TYPES.include?(f["type"])}
+      end
+
+      # Attempts a best-match job and candidate resume find
+      # BH presently separates these entries and does not refer to each other
+      # Looking for best match on name, owner, description, and type
+      def find_job_and_candidate_resumes(job_order_id, candidate_id)
+        job_order_resumes = self.find_job_order_resumes('JobOrder', job_order_id)
+        candidate_resumes = self.find_all_candidate_resumes('Candidate', candidate_id)
+        matching = []
+
+        job_order_resumes.each do |job|
+          candidate_resumes.each do |cand|
+            if job["name"] == cand["name"] &&
+              job["type"] == cand["type"] &&
+              job["description"] == cand["description"] &&
+              job["fileOwnerID"] == cand["fileOnwerID"]
+              matching << job
+            end
+          end
+        end
+
+        return matching
       end
 
       def parse_to_candidate(resume_text)
