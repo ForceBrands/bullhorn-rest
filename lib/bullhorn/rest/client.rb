@@ -13,6 +13,7 @@ module Bullhorn
       include Bullhorn::Rest::Entities::AppointmentAttendee
       include Bullhorn::Rest::Entities::BusinessSector
       include Bullhorn::Rest::Entities::Candidate
+      include Bullhorn::Rest::Entities::Opportunity
       include Bullhorn::Rest::Entities::CandidateCertification
       include Bullhorn::Rest::Entities::CandidateEducation
       include Bullhorn::Rest::Entities::CandidateReference

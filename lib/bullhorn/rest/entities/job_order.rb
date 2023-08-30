@@ -13,7 +13,8 @@ module Bullhorn
           'payRate',
           'correlatedCustomFloat3',
           'dateAdded',
-          'dateLastModified'
+          'dateLastModified',
+          'correlatedCustomText2'
         ])
       end
     end
