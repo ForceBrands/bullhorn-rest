@@ -134,14 +134,25 @@ module Bullhorn
       # Get the events for a subscription
       # conn.get_event_subscription('resources_production')
       def get_event_subscription(subscription_name, max_events = 100)
-        path = "event/subscription/#{subscription_name}?maxEvents=#{max_events}" 
-        res = conn.get path
+        attempt = 0
+        result = nil
 
-        if res.body.presence
-          JSON.parse(res.body)
-        else
-          puts "[bullhorn] No events for subscription: #{subscription_name}"
+        while attempt < 5
+          path = "event/subscription/#{subscription_name}?maxEvents=#{max_events}"
+          res = conn.get path
+
+          if res.body.presence
+            begin
+              result = JSON.parse(res.body)
+            rescue => e
+              attempt += 1
+            end
+          else
+            puts "[bullhorn] No events for subscription: #{subscription_name}"
+          end
         end
+
+        return result
       end 
 
       # Remove a subscription
