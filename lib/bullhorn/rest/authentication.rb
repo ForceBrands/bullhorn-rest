@@ -52,6 +52,11 @@ module Bullhorn
         res = auth_conn.get url, params    
         
         location = res.headers['location']
+
+        puts "authorize ======================================="
+        puts res.headers
+        puts location
+
         self.auth_code = CGI::parse(URI(location).query)["code"].first
       end
 
@@ -65,6 +70,11 @@ module Bullhorn
         }
         res = auth_conn.post url, params
         hash = JSON.parse(res.body)
+
+        puts "retrieve_tokens ======================================="
+        puts params
+        puts res.headers
+        puts hash
 
         if hash.keys.include?('errorCode')
           self.errors = hash
@@ -111,6 +121,11 @@ module Bullhorn
         response = auth_conn.get url, params
         hash = JSON.parse(response.body)
         
+        puts "login ======================================="
+        puts params
+        puts response.headers
+        puts hash
+
         if hash.keys.include?('errorCode')          
           self.errors = hash
           raise Bullhorn::Rest::AuthenticationError

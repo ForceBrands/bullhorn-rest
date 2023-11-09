@@ -4,7 +4,7 @@ module Bullhorn
       module ClientCorporation
         extend Base
         
-        define_methods(owner_methods: true, fields: [
+        define_methods(owner_methods: true, file_methods: true, fields: [
           'id',
           'name', 
           'numEmployees',
