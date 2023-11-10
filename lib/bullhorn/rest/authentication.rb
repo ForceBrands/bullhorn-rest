@@ -57,6 +57,11 @@ module Bullhorn
         puts res.headers
         puts location
 
+        if CGI::parse(URI(location).query)["response_type"].first == "code"
+          res = auth_conn.get location
+          location = res.headers['location']
+        end
+
         self.auth_code = CGI::parse(URI(location).query)["code"].first
       end
 
@@ -137,23 +142,19 @@ module Bullhorn
 
       def authenticate
         expire if expired?
-
-        if rest_token.nil?
-          if access_token.nil?
+        unless rest_token
+          unless access_token
             if refresh_token
               refresh_tokens
             else
-              if auth_code.nil?
+              unless auth_code
                 authorize
               end
-
               retrieve_tokens
             end
           end
-
           login
         end
-
         did_authenticate
       end
 
