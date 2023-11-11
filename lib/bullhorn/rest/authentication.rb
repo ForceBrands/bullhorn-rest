@@ -36,15 +36,7 @@ module Bullhorn
 
       # Use a separate connection for authentication
       def auth_conn
-        return @auth_conn if @auth_conn.present?
-
-        @auth_conn = Faraday.new do |f|
-          f.use Middleware, self
-          f.response :logger
-          f.request :multipart
-          f.request :url_encoded
-          f.adapter Faraday.default_adapter
-        end
+        @auth_conn ||= Faraday.new
       end
 
       def authorize
