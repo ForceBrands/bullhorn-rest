@@ -64,25 +64,50 @@ module Bullhorn
 
       def find_resume(entity = 'Candidate', entity_id)
         res = conn.get ['entityFiles', entity, entity_id].join('/')
-        files = JSON.parse(res.body)["EntityFiles"]
+        if res.body
+          body = JSON.parse(res.body)
+        else
+          return nil
+        end
+
+        return nil if body['errorMessage']
+
+        files = body["EntityFiles"]
         resume = files.select {|f| RESUME_TYPES.include?(f["type"]) }
         resume[-1]
       end 
 
       def get_resume(resume)
+        return unless resume.present?
         file_path = '/file' + resume['fileUrl'].split('/file')[-1] + '/raw'
         conn.get file_path
       end
 
       def find_job_order_resumes(entity = 'JobOrder', entity_id)
         res = conn.get ['entityFiles', entity, entity_id].join('/')
-        files = JSON.parse(res.body)["EntityFiles"]
+        if res.body
+          body = JSON.parse(res.body)
+        else
+          return nil
+        end
+
+        return nil if body['errorMessage']
+
+        files = body["EntityFiles"]
         files.select {|f| RESUME_TYPES.include?(f["type"])}
       end
 
       def find_all_candidate_resumes(entity='Candidate', candidate_id)
         res = conn.get ['entityFiles', entity, candidate_id].join('/')
-        files = JSON.parse(res.body)["EntityFiles"]
+        if res.body
+          body = JSON.parse(res.body)
+        else
+          return nil
+        end
+
+        return nil if body['errorMessage']
+
+        files = body["EntityFiles"]
         files.select {|f| RESUME_TYPES.include?(f["type"])}
       end
 
@@ -103,6 +128,10 @@ module Bullhorn
               matching << job
             end
           end
+        end
+
+        if matching.empty?
+          matching << candidate_resumes[-1]
         end
 
         return matching
