@@ -36,7 +36,15 @@ module Bullhorn
 
       # Use a separate connection for authentication
       def auth_conn
-        @auth_conn ||= Faraday.new
+        return @auth_conn if @auth_conn.present?
+
+        @auth_conn = Faraday.new do |f|
+          f.use Middleware, self
+          f.response :logger
+          f.request :multipart
+          f.request :url_encoded
+          f.adapter Faraday.default_adapter
+        end
       end
 
       def authorize
@@ -50,10 +58,11 @@ module Bullhorn
         }
 
         res = auth_conn.get url, params    
-        
+
         location = res.headers['location']
 
         puts "authorize ======================================="
+        puts "url: #{url}"
         puts res.headers
         puts location
 
