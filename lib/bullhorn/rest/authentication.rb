@@ -57,6 +57,11 @@ module Bullhorn
         puts res.headers
         puts location
 
+        if location.nil?
+          puts res.body
+          raise Bullhorn::Rest::AuthenticationError
+        end
+
         if CGI::parse(URI(location).query)["response_type"].first == "code"
           res = auth_conn.get location
           location = res.headers['location']
@@ -74,7 +79,13 @@ module Bullhorn
           client_secret: client_secret
         }
         res = auth_conn.post url, params
-        hash = JSON.parse(res.body)
+
+        if res.body.present?
+          hash = JSON.parse(res.body)
+        else
+          puts res.body
+          raise Bullhorn::Rest::AuthenticationError
+        end
 
         puts "retrieve_tokens ======================================="
         puts params
