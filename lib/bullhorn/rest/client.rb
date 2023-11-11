@@ -73,12 +73,15 @@ module Bullhorn
         return nil if body['errorMessage']
 
         files = body["EntityFiles"]
+
+        return nil if files.nil?
+
         resume = files.select {|f| RESUME_TYPES.include?(f["type"]) }
         resume[-1]
       end 
 
       def get_resume(resume)
-        return unless resume.present?
+        return unless resume.present? && resume['fileUrl'].present?
         file_path = '/file' + resume['fileUrl'].split('/file')[-1] + '/raw'
         conn.get file_path
       end
