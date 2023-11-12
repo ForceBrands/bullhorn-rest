@@ -31,7 +31,7 @@ module Bullhorn
       end
 
       def rest_host
-        @rest_host ||= "rest.bullhornstaffing.com"
+        @rest_host ||= "rest-west.bullhornstaffing.com"
       end
 
       # Use a separate connection for authentication
