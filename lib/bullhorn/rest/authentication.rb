@@ -68,7 +68,12 @@ module Bullhorn
           location = res.headers['location']
         end
 
-        self.auth_code = CGI::parse(URI(location).query)["code"].first
+        begin
+          self.auth_code = CGI::parse(URI(location).query)["code"].first
+        rescue => e
+          self.expire
+          raise Bullhorn::Rest::AuthenticationError, e
+        end
       end
 
       def retrieve_tokens
@@ -95,6 +100,7 @@ module Bullhorn
 
         if hash.keys.include?('errorCode')
           self.errors = hash
+          self.expire
           raise Bullhorn::Rest::AuthenticationError
         end
 
@@ -117,6 +123,7 @@ module Bullhorn
 
         if hash.keys.include?('errorCode')
           self.errors = hash
+          self.expire
           raise Bullhorn::Rest::AuthenticationError
         end
 
