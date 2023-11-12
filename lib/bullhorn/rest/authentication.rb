@@ -22,7 +22,7 @@ module Bullhorn
       end
 
       def auth_host
-        @auth_host ||= "auth.bullhornstaffing.com"
+        @auth_host ||= "auth-west.bullhornstaffing.com"
       end
 
       # Allow configuration of rest host
@@ -31,7 +31,7 @@ module Bullhorn
       end
 
       def rest_host
-        @rest_host ||= "rest.bullhornstaffing.com"
+        @rest_host ||= "rest-west.bullhornstaffing.com"
       end
 
       # Use a separate connection for authentication
