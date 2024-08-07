@@ -7,7 +7,7 @@ module Bullhorn
         define_methods(fields: [
           'id',
           # 'address',
-          # 'assignedTo',
+          'assignedTo',
           'businessSectors',
           'campaignSource',
           # 'candidates',

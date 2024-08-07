@@ -153,7 +153,13 @@ module Bullhorn
         attributes['file'] = Faraday::UploadIO.new(attributes['file'], attributes['ct'])
         res = conn.post path, attributes
         JSON.parse(res.body)
-      end 
+      end
+
+      def lead_assign_user(lead_id, user_id)
+        path = "entity/Lead/#{lead_id}/assignedTo/#{user_id}"
+        res = conn.put path
+        JSON.parse(res.body)
+      end
 
       # Create an event subscription (there is no way to query all of them, so remember the subscriptions you've created)
       # conn.create_event_subscription('resources_production', 'entity', ['INSERTED','UPDATED','DELETED'], ['Candidate', 'JobOrder', 'ClientCorporation', 'ClientContact', 'CorporateUser', 'Placement'])
