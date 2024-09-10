@@ -6,9 +6,27 @@ module Bullhorn
 
         define_methods(owner_methods: true, file_methods: true, fields: [
           'id',
-          'opportunityMarkUp',
+          'address',
+          'assignedDate',
+          'assignedUsers',
+          'businessSector',
+          'businessSectors',
+          'campaignSource',
+          'category',
+          'categories',
+          'clientContact',
+          'clientCorporation',
+          'committed',
           'dateAdded',
-          'dateLastModified'
+          'dateLastModified',
+          'description',
+          'markUpPercentage',
+          'notes',
+          'numOpenings',
+          'onSite',
+          'owner',
+          'status',
+          'title',
         ])
       end
     end
