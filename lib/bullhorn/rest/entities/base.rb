@@ -121,7 +121,7 @@ module Bullhorn
               if ids = options.delete(:association_ids)
                 path += "/#{ids.to_s}"
               end
-              res = conn.put path, attributes.to_json
+              res = conn.put path, attributes.to_json, initheader = {'Content-Type' => 'application/json'}
               Hashie::Mash.new JSON.parse(res.body)
             end
 
