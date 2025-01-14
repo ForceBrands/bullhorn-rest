@@ -58,7 +58,7 @@ module Bullhorn
               params = {:fields => fields, :count => '100'}.merge(options)
               path = "department#{name_plural}"
 
-              res = @conn.get path, params
+              res = @conn.get path, params, initheader = {'Content-Type' => 'application/json'}
               obj = decorate_response JSON.parse(res.body)
 
               attach_next_page obj, options, path, conn, fields
@@ -67,7 +67,7 @@ module Bullhorn
             define_method("user_#{plural}") do |options={}|
               params = {:fields => fields, :count => '100'}.merge(options)
               path = "my#{name_plural}"
-              res = @conn.get path, params
+              res = @conn.get path, params, initheader = {'Content-Type' => 'application/json'}
               obj = decorate_response JSON.parse(res.body)
               attach_next_page obj, options, path, conn, fields
             end
@@ -84,7 +84,7 @@ module Bullhorn
           define_method("search_#{plural}") do |options={}|
             params = {:fields => fields, :count => '200'}.merge(options)
             path = "search/#{name}"
-            res = @conn.get path, params
+            res = @conn.get path, params, initheader = {'Content-Type' => 'application/json'}
             obj = decorate_response JSON.parse(res.body)
             attach_next_page obj, options, path, conn, fields
           end
@@ -93,7 +93,7 @@ module Bullhorn
             # params = {:fields => '*', :count => '500', :orderBy => 'name'}.merge(options)
             params = {:fields => fields, :count => '200'}.merge(options)
             path = "query/#{name}"
-            res = @conn.get path, params
+            res = @conn.get path, params, initheader = {'Content-Type' => 'application/json'}
             obj = decorate_response JSON.parse(res.body)
             attach_next_page obj, options, path, conn, fields  
           end
@@ -104,7 +104,7 @@ module Bullhorn
             if assoc = options.delete(:association)
               path += "/#{assoc}"
             end
-            res = conn.get path, params
+            res = conn.get path, params, initheader = {'Content-Type' => 'application/json'}
             Hashie::Mash.new JSON.parse(res.body)
           end
 
@@ -127,7 +127,7 @@ module Bullhorn
 
             define_method("update_#{entity}") do |id, attributes={}|
               path = "entity/#{name}/#{id}"
-              res = conn.post path, attributes
+              res = conn.post path, attributes, initheader = {'Content-Type' => 'application/json'}
               Hashie::Mash.new JSON.parse(res.body)
             end
 
@@ -141,7 +141,7 @@ module Bullhorn
           if options[:file_methods]
             define_method("put_#{entity}_file") do |id, attributes = {}|
               path = "file/#{name}/#{id}"
-              res = conn.put path, attributes
+              res = conn.put path, attributes, initheader = {'Content-Type' => 'application/json'}
               Hashie::Mash.new JSON.parse(res.body)
             end
           end
