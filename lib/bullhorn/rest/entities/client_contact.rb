@@ -10,6 +10,7 @@ module Bullhorn
           'lastName',
           'email',
           'mobile',
+          'phone',
           'type',
           'status',
           'address',
