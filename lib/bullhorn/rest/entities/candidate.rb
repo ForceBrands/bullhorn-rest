@@ -13,7 +13,17 @@ module Bullhorn
           'companyName',
           'isDeleted',
           'dateAdded',
-          'dateLastModified'
+          'dateLastModified',
+          'status',
+          'phone',
+          'companyURL',
+          'experience',
+          'customText4',
+          'owner',
+          'description',
+          'businessSectorID',
+          'source',
+          'name'
         ])
       end
     end
